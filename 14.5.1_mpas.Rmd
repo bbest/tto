@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = T, message = F, warning = F)
 
 ```{r libraries}
 # set 3-letter country code
-cty <- "SEN"
+cty <- "TTO"
 source("setup.R")
 ```
 
@@ -23,7 +23,9 @@ Source: [ProtectedPlanet.net](https://www.protectedplanet.net)
 eez <- get_eez(cty)
 
 # TODO: use API https://api.protectedplanet.net/documentation once issued token working
-shp <- "data/wdpa_SEN/WDPA_Nov2018_search_cba488aa728738021c0392fed80e2aa4b1988f2df100259ef181699dd569dade-shapefile-polygons.shp"
+#shp <- "data/wdpa_SEN/WDPA_Nov2018_search_cba488aa728738021c0392fed80e2aa4b1988f2df100259ef181699dd569dade-shapefile-polygons.shp"
+shp <- "data/wdpa_TTO/WDPA_Dec2018_search_3ed200453b6420602854bb9432fc9d92a2f898ca935f7630a6b94eb8eda80d6f-shapefile-polygons.shp"
+
 mpa <- read_sf(shp) %>% 
   st_cast() %>% 
   st_make_valid()
@@ -70,7 +72,7 @@ d_mpa <- mpa %>%
 d_mpa <- d_mpa %>% 
   bind_rows(
     tibble(
-      year    = c(1990, now() %>% year()),
+      year    = c(1960, now() %>% year()),
       cum_pct = c(   0, max(d_mpa$cum_pct)))) %>% 
   arrange(year)
 

@@ -30,10 +30,16 @@ get_country <- function(cty){
     d_cty <- read_csv(cty_url)
     write_csv(d_cty, cty_csv)
   }
-  d_cty <- read_csv(cty_csv) # View(d_cty)
+  d_cty <- read_csv(cty_csv) %>% 
+    arrange(`ISO3166-1-Alpha-3`) # View(d_cty)
   
   country <- d_cty %>% 
-    filter(FIFA == cty) %>% 
+    mutate(
+      # TODO: figure out better country name harmonization scheme with SAUP, WDPA, etc
+      official_name_en = recode(
+        official_name_en, 
+        "Trinidad and Tobago" = "Trinidad & Tobago")) %>% 
+    filter(`ISO3166-1-Alpha-3` == cty) %>% 
     pull(official_name_en)
 }
 get_eez <- function(cty, geojson = here(glue("data/eez_{cty}.geojson"))){
@@ -42,6 +48,7 @@ get_eez <- function(cty, geojson = here(glue("data/eez_{cty}.geojson"))){
     
     country <- get_country(cty)
     
+    mr_eezs <- mr_names("MarineRegions:eez")
     eez_ids <- mr_names_search(mr_eezs, country) %>% pull(id)
     eez_list <- lapply(eez_ids, function(id) 
       mr_features_get('MarineRegions:eez', id, format='json') %>% 
@@ -67,6 +74,8 @@ map_eez <- function(eez){
     addPolygons(data = eez)}
 get_fishing_eez_id <- function(cty){
   country <- get_country(cty)
+  # TODO: harmonize get_country() with SAUP names
+  #browser()
   listregions('eez') %>% 
     filter(title == !!country) %>% 
     pull("id")

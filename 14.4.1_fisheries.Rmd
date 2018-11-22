@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = T, message = F, warning = F)
 
 ```{r libraries}
 # set 3-letter country code
-cty <- "SEN"
+cty <- "TTO"
 source("setup.R")
 ```
 
@@ -71,6 +71,7 @@ ggplotly(g)
 
 ```{r}
 d_cells <- get_fishing_cells(2014, cty)
+source("setup.R")
 country <- get_country(cty)
 map_fishing_cells(d_cells, fishing_entity_name == country)
 ```
